@@ -54,8 +54,8 @@ def fact_func():
         result = str(factorial(val))
     except ValueError as e:
         result = f"ERRO: {e}"
-    except (TypeError, OverflowError):
-        result = "ERRO"
+    except (TypeError, OverflowError) as e:
+        result = f"ERRO: {e}"
     calc_operator = result
     text_input.set(result)
 
@@ -65,8 +65,8 @@ def trig_sin():
     try:
         val = float(calc_operator)
         result = str(math.sin(math.radians(val)))
-    except ValueError:
-        result = "ERROR"
+    except ValueError as e:
+        result = f"ERRO: {e}"
     calc_operator = result
     text_input.set(result)
 
@@ -75,8 +75,8 @@ def trig_cos():
     try:
         val = float(calc_operator)
         result = str(math.cos(math.radians(val)))
-    except ValueError:
-        result = "ERROR"
+    except ValueError as e:
+        result = f"ERRO: {e}"
     calc_operator = result
     text_input.set(result)
 
@@ -87,10 +87,10 @@ def trig_tan():
         rad = math.radians(val)
         tan_val = math.tan(rad)
         if abs(tan_val) > 1e10:
-            raise ValueError("tan indefinida")
+            raise ValueError("Tangente indefinida para este ângulo.")
         result = str(tan_val)
-    except (ValueError, ZeroDivisionError):
-        result = "ERROR"
+    except (ValueError, ZeroDivisionError) as e:
+        result = f"ERRO: {e}"
     calc_operator = result
     text_input.set(result)
 
@@ -100,10 +100,10 @@ def trig_cot():
         val = float(calc_operator)
         tan_val = math.tan(math.radians(val))
         if tan_val == 0:
-            raise ZeroDivisionError
+            raise ZeroDivisionError("Cotangente indefinida (divisão por zero).")
         result = str(1 / tan_val)
-    except (ValueError, ZeroDivisionError):
-        result = "ERROR"
+    except (ValueError, ZeroDivisionError) as e:
+        result = f"ERRO: {e}"
     calc_operator = result
     text_input.set(result)
 
@@ -113,10 +113,10 @@ def square_root():
     try:
         val = float(calc_operator)
         if val < 0:
-            raise ValueError("Raiz de número negativo")
+            raise ValueError("Não é possível extrair raiz quadrada de número negativo.")
         temp = str(math.sqrt(val))
-    except (ValueError, TypeError):
-        temp = "ERROR"
+    except (ValueError, TypeError) as e:
+        temp = f"ERRO: {e}"
     calc_operator = temp
     text_input.set(temp)
 
@@ -129,8 +129,8 @@ def third_root():
             temp = str(val ** (1 / 3))
         else:
             temp = str(-(-val) ** (1 / 3))
-    except (ValueError, TypeError):
-        temp = "ERROR"
+    except (ValueError, TypeError) as e:
+        temp = f"ERRO: {e}"
     calc_operator = temp
     text_input.set(temp)
 
@@ -151,8 +151,8 @@ def percent():
     try:
         val = float(calc_operator)
         temp = str(val / 100)
-    except (ValueError, TypeError):
-        temp = "ERROR"
+    except (ValueError, TypeError) as e:
+        temp = f"ERRO: {e}"
     calc_operator = temp
     text_input.set(temp)
 
@@ -162,8 +162,8 @@ def exp_func():
     try:
         val = float(calc_operator)
         temp = str(math.exp(val))
-    except (ValueError, TypeError, OverflowError):
-        temp = "ERROR"
+    except (ValueError, TypeError, OverflowError) as e:
+        temp = f"ERRO: {e}"
     calc_operator = temp
     text_input.set(temp)
 
@@ -186,12 +186,12 @@ def button_equal():
 
         result = aeval(calc_operator)
         if result is None:
-            raise ValueError("Expressão inválida")
+            raise ValueError("Expressão inválida.")
         calc_operator = str(result)
         text_input.set(calc_operator)
-    except Exception:
-        calc_operator = "ERROR"
-        text_input.set("ERROR")
+    except Exception as e:
+        calc_operator = f"ERRO: {e}"
+        text_input.set(calc_operator)
 
 '''
 Variables
@@ -215,7 +215,6 @@ text_display.grid(columnspan=5, padx=10, pady=15)
 
 button_params = {'bd':5, 'fg':'#BBB', 'bg':'#3C3636', 'font':('sans-serif', 20, 'bold')}
 button_params_main = {'bd':5, 'fg':'#000', 'bg':'#BBB', 'font':('sans-serif', 20, 'bold')}
-
 
 '''
 Buttons
