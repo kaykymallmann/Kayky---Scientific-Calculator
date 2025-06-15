@@ -36,7 +36,7 @@ def button_delete():
 # Function to calculate the factorial of a number with validation
 def factorial(n):
     if not isinstance(n, int) or n < 0:
-        raise ValueError("Factorial only defined for non-negative integers")
+        raise ValueError("Fatorial só é definido para inteiros não negativos.")
     if n == 0 or n == 1:
         return 1
     else:
@@ -45,12 +45,17 @@ def factorial(n):
 def fact_func():
     global calc_operator
     try:
-        val = int(calc_operator)  # factorial requires int input
+        val = float(calc_operator)
+        if val != int(val):
+            raise ValueError("Use apenas inteiros para fatorial.")
+        val = int(val)
         if val < 0:
-            raise ValueError("Negative factorial")
+            raise ValueError("Fatorial de número negativo não existe.")
         result = str(factorial(val))
-    except (ValueError, TypeError):
-        result = "ERROR"
+    except ValueError as e:
+        result = f"ERRO: {e}"
+    except (TypeError, OverflowError):
+        result = "ERRO"
     calc_operator = result
     text_input.set(result)
 
@@ -81,8 +86,8 @@ def trig_tan():
         val = float(calc_operator)
         rad = math.radians(val)
         tan_val = math.tan(rad)
-        if abs(tan_val) > 1e10:  # evita valores muito grandes por tangente indefinida
-            raise ValueError("tan undefined")
+        if abs(tan_val) > 1e10:
+            raise ValueError("tan indefinida")
         result = str(tan_val)
     except (ValueError, ZeroDivisionError):
         result = "ERROR"
@@ -108,7 +113,7 @@ def square_root():
     try:
         val = float(calc_operator)
         if val < 0:
-            raise ValueError("Negative root")
+            raise ValueError("Raiz de número negativo")
         temp = str(math.sqrt(val))
     except (ValueError, TypeError):
         temp = "ERROR"
@@ -120,7 +125,6 @@ def third_root():
     global calc_operator
     try:
         val = float(calc_operator)
-        # Mantém o cálculo da raiz cúbica para números negativos também
         if val >= 0:
             temp = str(val ** (1 / 3))
         else:
@@ -168,8 +172,6 @@ def button_equal():
     global calc_operator
     aeval = Interpreter()
     try:
-        # Ajustar para funções trigonométricas em graus, logaritmos, etc.
-        # Mapeamos algumas funções para o contexto do aeval
         aeval.symtable['sin'] = lambda x: math.sin(math.radians(float(x)))
         aeval.symtable['cos'] = lambda x: math.cos(math.radians(float(x)))
         aeval.symtable['tan'] = lambda x: math.tan(math.radians(float(x)))
@@ -183,9 +185,8 @@ def button_equal():
         aeval.symtable['pow'] = pow
 
         result = aeval(calc_operator)
-        # Se o resultado for None, erro
         if result is None:
-            raise ValueError("Invalid Expression")
+            raise ValueError("Expressão inválida")
         calc_operator = str(result)
         text_input.set(calc_operator)
     except Exception:
@@ -214,6 +215,7 @@ text_display.grid(columnspan=5, padx=10, pady=15)
 
 button_params = {'bd':5, 'fg':'#BBB', 'bg':'#3C3636', 'font':('sans-serif', 20, 'bold')}
 button_params_main = {'bd':5, 'fg':'#000', 'bg':'#BBB', 'font':('sans-serif', 20, 'bold')}
+
 
 '''
 Buttons
