@@ -33,19 +33,19 @@ def button_delete():
     calc_operator = text
     text_input.set(text)
 
-# Function to calculate the factorial of a number
+# Function to calculate the factorial of a number with validation
 def factorial(n):
+    if not isinstance(n, int) or n < 0:
+        raise ValueError("Factorial only defined for non-negative integers")
     if n == 0 or n == 1:
         return 1
-    elif n < 0:
-        raise ValueError("Factorial not defined for negative numbers")
     else:
         return n * factorial(n - 1)
 
 def fact_func():
     global calc_operator
     try:
-        val = int(calc_operator)
+        val = int(calc_operator)  # factorial requires int input
         if val < 0:
             raise ValueError("Negative factorial")
         result = str(factorial(val))
@@ -54,7 +54,7 @@ def fact_func():
     calc_operator = result
     text_input.set(result)
 
-# Function to calculate trigonometric numbers of an angle
+# Function to calculate trigonometric numbers of an angle in degrees
 def trig_sin():
     global calc_operator
     try:
@@ -81,7 +81,7 @@ def trig_tan():
         val = float(calc_operator)
         rad = math.radians(val)
         tan_val = math.tan(rad)
-        if abs(tan_val) > 1e10:
+        if abs(tan_val) > 1e10:  # evita valores muito grandes por tangente indefinida
             raise ValueError("tan undefined")
         result = str(tan_val)
     except (ValueError, ZeroDivisionError):
@@ -120,7 +120,11 @@ def third_root():
     global calc_operator
     try:
         val = float(calc_operator)
-        temp = str(val ** (1 / 3))
+        # Mantém o cálculo da raiz cúbica para números negativos também
+        if val >= 0:
+            temp = str(val ** (1 / 3))
+        else:
+            temp = str(-(-val) ** (1 / 3))
     except (ValueError, TypeError):
         temp = "ERROR"
     calc_operator = temp
@@ -166,9 +170,9 @@ def button_equal():
     try:
         # Ajustar para funções trigonométricas em graus, logaritmos, etc.
         # Mapeamos algumas funções para o contexto do aeval
-        aeval.symtable['sin'] = lambda x: math.sin(math.radians(x))
-        aeval.symtable['cos'] = lambda x: math.cos(math.radians(x))
-        aeval.symtable['tan'] = lambda x: math.tan(math.radians(x))
+        aeval.symtable['sin'] = lambda x: math.sin(math.radians(float(x)))
+        aeval.symtable['cos'] = lambda x: math.cos(math.radians(float(x)))
+        aeval.symtable['tan'] = lambda x: math.tan(math.radians(float(x)))
         aeval.symtable['log'] = math.log10
         aeval.symtable['ln'] = math.log
         aeval.symtable['sqrt'] = math.sqrt
@@ -255,94 +259,82 @@ second_power.grid(row=3, column=0, sticky="nsew")
 third_power = Button(tk_calc, button_params, text='x\u00B3',
              command=lambda:button_click('**3'))
 third_power.grid(row=3, column=1, sticky="nsew")
-exponential = Button(tk_calc, button_params, text='e^x',
-             command=exp_func)
-exponential.grid(row=3, column=2, sticky="nsew")
-square_root_button = Button(tk_calc, button_params, text='\u221A',
+square_rt = Button(tk_calc, button_params, text='\u221A',
              command=square_root)
-square_root_button.grid(row=3, column=3, sticky="nsew")
-third_root_button = Button(tk_calc, button_params, text='\u221B',
+square_rt.grid(row=3, column=2, sticky="nsew")
+third_rt = Button(tk_calc, button_params, text='\u221B',
              command=third_root)
-third_root_button.grid(row=3, column=4, sticky="nsew")
+third_rt.grid(row=3, column=3, sticky="nsew")
+exponent = Button(tk_calc, button_params, text='exp',
+             command=exp_func)
+exponent.grid(row=3, column=4, sticky="nsew")
 
 #--4th row--
-open_parenthesis = Button(tk_calc, button_params, text='(',
-             command=lambda:button_click('('))
-open_parenthesis.grid(row=4, column=0, sticky="nsew")
-close_parenthesis = Button(tk_calc, button_params, text=')',
-             command=lambda:button_click(')'))
-close_parenthesis.grid(row=4, column=1, sticky="nsew")
-delete_button = Button(tk_calc, button_params, text='DEL',
-             command=button_delete)
-delete_button.grid(row=4, column=2, sticky="nsew")
-clear_all_button = Button(tk_calc, button_params, text='C',
-             command=button_clear_all)
-clear_all_button.grid(row=4, column=3, sticky="nsew")
-sign_button = Button(tk_calc, button_params, text='+/-',
-             command=sign_change)
-sign_button.grid(row=4, column=4, sticky="nsew")
+seven = Button(tk_calc, button_params_main, text='7',
+               command=lambda:button_click(7))
+seven.grid(row=4, column=0, sticky="nsew")
+eight = Button(tk_calc, button_params_main, text='8',
+               command=lambda:button_click(8))
+eight.grid(row=4, column=1, sticky="nsew")
+nine = Button(tk_calc, button_params_main, text='9',
+               command=lambda:button_click(9))
+nine.grid(row=4, column=2, sticky="nsew")
+divide = Button(tk_calc, button_params_main, text='/',
+                command=lambda:button_click('/'))
+divide.grid(row=4, column=3, sticky="nsew")
+clear_all = Button(tk_calc, button_params_main, text='C',
+                   command=button_clear_all)
+clear_all.grid(row=4, column=4, sticky="nsew")
 
 #--5th row--
-button7 = Button(tk_calc, button_params_main, text='7',
-                 command=lambda:button_click('7'))
-button7.grid(row=5, column=0, sticky="nsew")
-button8 = Button(tk_calc, button_params_main, text='8',
-                 command=lambda:button_click('8'))
-button8.grid(row=5, column=1, sticky="nsew")
-button9 = Button(tk_calc, button_params_main, text='9',
-                 command=lambda:button_click('9'))
-button9.grid(row=5, column=2, sticky="nsew")
-divide_button = Button(tk_calc, button_params, text='/',
-                       command=lambda:button_click('/'))
-divide_button.grid(row=5, column=3, sticky="nsew")
-percent_button = Button(tk_calc, button_params, text='%',
-                        command=percent)
-percent_button.grid(row=5, column=4, sticky="nsew")
+four = Button(tk_calc, button_params_main, text='4',
+              command=lambda:button_click(4))
+four.grid(row=5, column=0, sticky="nsew")
+five = Button(tk_calc, button_params_main, text='5',
+              command=lambda:button_click(5))
+five.grid(row=5, column=1, sticky="nsew")
+six = Button(tk_calc, button_params_main, text='6',
+              command=lambda:button_click(6))
+six.grid(row=5, column=2, sticky="nsew")
+multiply = Button(tk_calc, button_params_main, text='*',
+                  command=lambda:button_click('*'))
+multiply.grid(row=5, column=3, sticky="nsew")
+delete = Button(tk_calc, button_params_main, text='DEL',
+                command=button_delete)
+delete.grid(row=5, column=4, sticky="nsew")
 
 #--6th row--
-button4 = Button(tk_calc, button_params_main, text='4',
-                 command=lambda:button_click('4'))
-button4.grid(row=6, column=0, sticky="nsew")
-button5 = Button(tk_calc, button_params_main, text='5',
-                 command=lambda:button_click('5'))
-button5.grid(row=6, column=1, sticky="nsew")
-button6 = Button(tk_calc, button_params_main, text='6',
-                 command=lambda:button_click('6'))
-button6.grid(row=6, column=2, sticky="nsew")
-multiply_button = Button(tk_calc, button_params, text='*',
-                         command=lambda:button_click('*'))
-multiply_button.grid(row=6, column=3, sticky="nsew")
-power_button = Button(tk_calc, button_params, text='^',
-                      command=lambda:button_click('**'))
-power_button.grid(row=6, column=4, sticky="nsew")
+one = Button(tk_calc, button_params_main, text='1',
+             command=lambda:button_click(1))
+one.grid(row=6, column=0, sticky="nsew")
+two = Button(tk_calc, button_params_main, text='2',
+             command=lambda:button_click(2))
+two.grid(row=6, column=1, sticky="nsew")
+three = Button(tk_calc, button_params_main, text='3',
+               command=lambda:button_click(3))
+three.grid(row=6, column=2, sticky="nsew")
+minus = Button(tk_calc, button_params_main, text='-',
+               command=lambda:button_click('-'))
+minus.grid(row=6, column=3, sticky="nsew")
+sign = Button(tk_calc, button_params_main, text='+/-',
+              command=sign_change)
+sign.grid(row=6, column=4, sticky="nsew")
 
 #--7th row--
-button1 = Button(tk_calc, button_params_main, text='1',
-                 command=lambda:button_click('1'))
-button1.grid(row=7, column=0, sticky="nsew")
-button2 = Button(tk_calc, button_params_main, text='2',
-                 command=lambda:button_click('2'))
-button2.grid(row=7, column=1, sticky="nsew")
-button3 = Button(tk_calc, button_params_main, text='3',
-                 command=lambda:button_click('3'))
-button3.grid(row=7, column=2, sticky="nsew")
-subtract_button = Button(tk_calc, button_params, text='-',
-                         command=lambda:button_click('-'))
-subtract_button.grid(row=7, column=3, sticky="nsew")
-decimal_button = Button(tk_calc, button_params_main, text='.',
-                        command=lambda:button_click('.'))
-decimal_button.grid(row=7, column=4, sticky="nsew")
+zero = Button(tk_calc, button_params_main, text='0',
+              command=lambda:button_click(0))
+zero.grid(row=7, column=0, sticky="nsew")
+dot = Button(tk_calc, button_params_main, text='.',
+             command=lambda:button_click('.'))
+dot.grid(row=7, column=1, sticky="nsew")
+percent_button = Button(tk_calc, button_params_main, text='%',
+                        command=percent)
+percent_button.grid(row=7, column=2, sticky="nsew")
+plus = Button(tk_calc, button_params_main, text='+',
+              command=lambda:button_click('+'))
+plus.grid(row=7, column=3, sticky="nsew")
+equal = Button(tk_calc, button_params_main, text='=',
+               command=button_equal)
+equal.grid(row=7, column=4, sticky="nsew")
 
-#--8th row--
-button0 = Button(tk_calc, button_params_main, text='0',
-                 command=lambda:button_click('0'))
-button0.grid(row=8, column=0, columnspan=2, sticky="nsew")
-plus_button = Button(tk_calc, button_params, text='+',
-                     command=lambda:button_click('+'))
-plus_button.grid(row=8, column=2, sticky="nsew")
-equal_button = Button(tk_calc, button_params, text='=',
-                      command=button_equal)
-equal_button.grid(row=8, column=3, columnspan=2, sticky="nsew")
-
-# Mainloop of window
 tk_calc.mainloop()
